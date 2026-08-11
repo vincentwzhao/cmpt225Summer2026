@@ -1,5 +1,5 @@
 // iterator_fib.cpp
-
+//Demonstrates the basic idea of an iterator using the Fibonacci sequence. Compared to most iterators, this is an infinite iterator (because the Fibonacci sequence is infinite), and so there is no need to check if there is a next element.
 #include <iostream>
 
 using namespace std;

@@ -1,5 +1,5 @@
 // stack_demo.cpp
-
+// Shows how to use an abstract base class from stack_base.h to implement a stack data structure. It provides two different implementations, one using a vector and one using a list. Both inherit from the same stack base class and so they share the same interface. The function test_Stack(Stack_base* stack) is an example of runtime polymorphism: you can pass it a pointer to any type of Stack_base object and the correct methods will be called at runtime./*
 #include "stack_base.h"
 #include <cassert>
 #include <iostream>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CMPT 225 Notes Organizer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>CMPT 225 — Fall 2026</h1>
+    <span class="subtitle">Notes Organizer</span>
+  </header>
+
+  <div class="layout">
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Topics</h2>
+      </div>
+      <ul id="topic-list"></ul>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <input id="search-input" type="text" placeholder="Search notes…" />
+        <button id="new-note-btn" class="icon-btn" title="New note">+ New</button>
+      </div>
+      <ul id="note-list"></ul>
+      <div class="panel-header">
+        <button id="export-btn" class="icon-btn">Export JSON</button>
+        <label class="icon-btn" for="import-input" style="cursor:pointer;">Import JSON</label>
+        <input id="import-input" type="file" accept="application/json" class="hidden" />
+      </div>
+    </section>
+
+    <section class="panel">
+      <div id="empty-state">
+        Select a note from the list, or create a new one to start organizing your CMPT 225 notes
+        by topic — OOP in Java, ADTs, data structures, algorithms, and algorithm efficiency.
+      </div>
+      <div id="editor" class="hidden">
+        <input id="editor-title" type="text" placeholder="Note title" />
+        <div class="editor-meta-row">
+          <select id="editor-topic"></select>
+          <select id="editor-subtopic"></select>
+          <input id="editor-tags" type="text" placeholder="tags, comma, separated" />
+        </div>
+        <div class="editor-toolbar">
+          <div>
+            <button id="pin-toggle" class="icon-btn" title="Pin note">★ Pin</button>
+            <button id="preview-toggle" class="icon-btn">Preview</button>
+            <button id="delete-note-btn" class="icon-btn danger">Delete</button>
+          </div>
+          <span id="editor-updated"></span>
+        </div>
+        <textarea id="editor-content" placeholder="Write your notes here (Markdown-ish: # headers, **bold**, *italic*, `code`, ```code blocks```, - lists, [links](url))."></textarea>
+        <div id="editor-preview" class="hidden"></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -7,6 +7,13 @@ that some topics may take more/less time, so the topics are not exact.
 
 - [Notes from lectures are posted here](lectures).
 
+## Notes Organizer (Fall 2026)
+
+A small offline notes app for organizing CMPT 225 study notes by topic
+(OOP in Java, ADTs, data structures, algorithms, algorithm efficiency).
+No install needed — see [`notes-organizer/`](notes-organizer) and open
+`notes-organizer/index.html` in a browser.
+
 ## Problem Sets
 
 - [Quiz 1 problem set (markdown)](quiz1_problemset.md)

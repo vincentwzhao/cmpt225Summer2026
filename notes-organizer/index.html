@@ -366,6 +366,141 @@ header .subtitle {
   display: none !important;
 }
 
+.related-materials {
+  margin: 4px 0 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel-alt);
+}
+
+.related-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.related-empty {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.related-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.related-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.related-list a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.related-list a:hover {
+  text-decoration: underline;
+}
+
+.coverage-panel {
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+
+.coverage-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.coverage-table th {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.coverage-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.coverage-row.topic-row td {
+  font-weight: 700;
+  background: var(--panel-alt);
+}
+
+.coverage-row.sub-row:hover {
+  background: var(--panel-alt);
+  cursor: pointer;
+}
+
+.coverage-row.sub-row td:first-child {
+  padding-left: 26px;
+  color: var(--text-dim);
+}
+
+.coverage-status {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+.coverage-status.has-notes {
+  background: #1f6e4a33;
+  color: #3fbf80;
+}
+
+.coverage-status.has-materials {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.coverage-status.gap {
+  background: #e5686f26;
+  color: var(--danger);
+}
+
+.coverage-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.coverage-links a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 1px 8px;
+}
+
+.coverage-links a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.coverage-links .none {
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: 1fr;
@@ -383,6 +518,8 @@ header .subtitle {
   <header>
     <h1>CMPT 225 — Fall 2026</h1>
     <span class="subtitle">Notes Organizer</span>
+    <span style="flex:1"></span>
+    <button id="coverage-toggle" class="icon-btn" title="See which syllabus topics have notes, lectures, and quizzes">Topic Coverage</button>
   </header>
 
   <div class="layout">
@@ -393,42 +530,49 @@ header .subtitle {
       <ul id="topic-list"></ul>
     </section>
 
-    <section class="panel">
-      <div class="panel-header">
-        <input id="search-input" type="text" placeholder="Search notes…" />
-        <button id="new-note-btn" class="icon-btn" title="New note">+ New</button>
-      </div>
-      <ul id="note-list"></ul>
-      <div class="panel-header">
-        <button id="export-btn" class="icon-btn">Export JSON</button>
-        <label class="icon-btn" for="import-input" style="cursor:pointer;">Import JSON</label>
-        <input id="import-input" type="file" accept="application/json" class="hidden" />
-      </div>
-    </section>
+    <div id="notes-view" style="display: contents">
+      <section class="panel">
+        <div class="panel-header">
+          <input id="search-input" type="text" placeholder="Search notes…" />
+          <button id="new-note-btn" class="icon-btn" title="New note">+ New</button>
+        </div>
+        <ul id="note-list"></ul>
+        <div class="panel-header">
+          <button id="export-btn" class="icon-btn">Export JSON</button>
+          <label class="icon-btn" for="import-input" style="cursor:pointer;">Import JSON</label>
+          <input id="import-input" type="file" accept="application/json" class="hidden" />
+        </div>
+      </section>
 
-    <section class="panel">
-      <div id="empty-state">
-        Select a note from the list, or create a new one to start organizing your CMPT 225 notes
-        by topic — OOP in Java, ADTs, data structures, algorithms, and algorithm efficiency.
-      </div>
-      <div id="editor" class="hidden">
-        <input id="editor-title" type="text" placeholder="Note title" />
-        <div class="editor-meta-row">
-          <select id="editor-topic"></select>
-          <select id="editor-subtopic"></select>
-          <input id="editor-tags" type="text" placeholder="tags, comma, separated" />
+      <section class="panel">
+        <div id="empty-state">
+          Select a note from the list, or create a new one to start organizing your CMPT 225 notes
+          by topic — OOP in Java, ADTs, data structures, algorithms, and algorithm efficiency.
         </div>
-        <div class="editor-toolbar">
-          <div>
-            <button id="pin-toggle" class="icon-btn" title="Pin note">★ Pin</button>
-            <button id="preview-toggle" class="icon-btn">Preview</button>
-            <button id="delete-note-btn" class="icon-btn danger">Delete</button>
+        <div id="editor" class="hidden">
+          <input id="editor-title" type="text" placeholder="Note title" />
+          <div class="editor-meta-row">
+            <select id="editor-topic"></select>
+            <select id="editor-subtopic"></select>
+            <input id="editor-tags" type="text" placeholder="tags, comma, separated" />
           </div>
-          <span id="editor-updated"></span>
+          <div id="related-materials" class="related-materials"></div>
+          <div class="editor-toolbar">
+            <div>
+              <button id="pin-toggle" class="icon-btn" title="Pin note">★ Pin</button>
+              <button id="preview-toggle" class="icon-btn">Preview</button>
+              <button id="delete-note-btn" class="icon-btn danger">Delete</button>
+            </div>
+            <span id="editor-updated"></span>
+          </div>
+          <textarea id="editor-content" placeholder="Write your notes here (Markdown-ish: # headers, **bold**, *italic*, `code`, ```code blocks```, - lists, [links](url))."></textarea>
+          <div id="editor-preview" class="hidden"></div>
         </div>
-        <textarea id="editor-content" placeholder="Write your notes here (Markdown-ish: # headers, **bold**, *italic*, `code`, ```code blocks```, - lists, [links](url))."></textarea>
-        <div id="editor-preview" class="hidden"></div>
-      </div>
+      </section>
+    </div>
+
+    <section id="coverage-view" class="panel coverage-panel hidden" style="grid-column: 2 / -1;">
+      <div id="coverage-table-wrap"></div>
     </section>
   </div>
 
@@ -492,6 +636,57 @@ const TOPICS = [
 ];
 
 const topicById = (id) => TOPICS.find((t) => t.id === id);
+
+// Maps syllabus topics/subtopics to the actual lecture and quiz files in this
+// repo, so a note's editor can surface "here's the material for this" and
+// the coverage view can show what has no notes yet. Paths are relative to
+// this file's location (notes-organizer/index.html), so they only resolve
+// when this file stays inside the cloned repo.
+//
+// Built from the real lecture slide titles (opened with python-pptx) and
+// each quiz's stated textbook chapters (Goodrich/Tamassia/Mount, "Data
+// Structures and Algorithms in C++", 2nd ed.) rather than guessed from
+// folder names. If a lecture gets reordered or retitled, update this list.
+const RESOURCES = [
+  { type: 'lecture', label: 'Lecture 2–3: Introduction to Linked Lists', path: '../lectures/lecture2_3/lecture2.pptx', topics: [{ topic: 'ds', subtopics: ['Lists'] }] },
+  { type: 'lecture', label: 'Lecture 4: Linked List Practice', path: '../lectures/lecture4/', topics: [{ topic: 'ds', subtopics: ['Lists'] }] },
+  { type: 'lecture', label: 'Lecture 5–6: Variations on Linked Lists', path: '../lectures/lecture5_6/lecture6.pptx', topics: [{ topic: 'ds', subtopics: ['Lists'] }] },
+  { type: 'lecture', label: 'Lecture 7–9: Big-O Notation', path: '../lectures/lecture7_8_9/O_notation.md', topics: [{ topic: 'analysis', subtopics: ['Big-O Notation', 'Time Complexity'] }] },
+  { type: 'lecture', label: 'Lecture 10–11: Arrays, Stacks & Queues', path: '../lectures/lecture10_11/lecture10_11.pptx', topics: [{ topic: 'ds', subtopics: ['Stacks', 'Queues'] }] },
+  { type: 'lecture', label: 'Lecture 12–14: Trees', path: '../lectures/lecture12_13_14/lecture_trees.pptx', topics: [{ topic: 'ds', subtopics: ['Trees', 'Binary Trees'] }] },
+  { type: 'lecture', label: 'Lecture 15–16: Heaps & Priority Queues', path: '../lectures/lecture15_16/lecture_pqs_and_heaps.pptx', topics: [{ topic: 'ds', subtopics: ['Priority Queues', 'Heaps'] }] },
+  { type: 'lecture', label: 'Lecture 17–19: Maps & Hashing', path: '../lectures/lecture17_18_19/MapsAndHashing.pptx', topics: [{ topic: 'ds', subtopics: ['Hash Tables'] }] },
+  { type: 'lecture', label: 'Lecture 20–21: Sorting', path: '../lectures/lecture20_21/sorting.pptx', topics: [{ topic: 'algo', subtopics: ['Sorting'] }] },
+  { type: 'lecture', label: 'Lecture 22–24: Binary Search Trees', path: '../lectures/lecture22_23_24/binary_search_trees.pptx', topics: [{ topic: 'ds', subtopics: ['Binary Search Trees', 'Self-Balancing Trees'] }] },
+  { type: 'lecture', label: 'Lecture 25–29: Graph Algorithms', path: '../lectures/lecture25_26_27_28_29/graphAlgorithms.pptx', topics: [{ topic: 'algo', subtopics: ['Graph Traversing'] }] },
+  { type: 'lecture', label: 'Lecture 30–31: Recursion & Memoization (Fibonacci)', path: '../lectures/lecture30_31/fibonacci.pptx', topics: [{ topic: 'algo', subtopics: ['Recursion', 'Divide and Conquer'] }] },
+  { type: 'lecture', label: 'Lecture 32–34: Object-Oriented Design', path: '../lectures/lecture32_33_34/oo_design.pptx', topics: [{ topic: 'oop' }] },
+
+  { type: 'quiz', label: 'Quiz 1 problem set (Lists, Sorting, Big-O)', path: '../quiz1_problemset.md', topics: [{ topic: 'ds', subtopics: ['Lists'] }, { topic: 'algo', subtopics: ['Sorting'] }, { topic: 'analysis', subtopics: ['Big-O Notation', 'Time Complexity'] }] },
+  { type: 'quiz', label: 'Quiz 1 sample solutions', path: '../quiz1_sol.pdf', topics: [{ topic: 'ds', subtopics: ['Lists'] }, { topic: 'algo', subtopics: ['Sorting'] }, { topic: 'analysis', subtopics: ['Big-O Notation', 'Time Complexity'] }] },
+  { type: 'quiz', label: 'Quiz 2 problem set (Stacks, Queues, Trees)', path: '../quiz2_problemset.pdf', topics: [{ topic: 'ds', subtopics: ['Stacks', 'Queues', 'Trees'] }] },
+  { type: 'quiz', label: 'Quiz 2 sample solutions', path: '../quiz2_sol.pdf', topics: [{ topic: 'ds', subtopics: ['Stacks', 'Queues', 'Trees'] }] },
+  { type: 'quiz', label: 'Quiz 3 problem set (Heaps, PQs, Hash Tables)', path: '../quiz3_problemset.pdf', topics: [{ topic: 'ds', subtopics: ['Priority Queues', 'Heaps', 'Hash Tables'] }] },
+  { type: 'quiz', label: 'Quiz 3 sample solutions', path: '../quiz3_sol.pdf', topics: [{ topic: 'ds', subtopics: ['Priority Queues', 'Heaps', 'Hash Tables'] }] },
+  { type: 'quiz', label: 'Quiz 4 problem set (Sorting, BSTs, Self-Balancing Trees, Sets)', path: '../quiz4_problemset.pdf', topics: [{ topic: 'algo', subtopics: ['Sorting'] }, { topic: 'ds', subtopics: ['Binary Search Trees', 'Self-Balancing Trees', 'Sets'] }] },
+  { type: 'quiz', label: 'Quiz 4 sample solutions', path: '../quiz4_sol.pdf', topics: [{ topic: 'algo', subtopics: ['Sorting'] }, { topic: 'ds', subtopics: ['Binary Search Trees', 'Self-Balancing Trees', 'Sets'] }] },
+  { type: 'quiz', label: 'Quiz 5 problem set (Graph Algorithms, Recursion)', path: '../quiz5_problemset.pdf', topics: [{ topic: 'algo', subtopics: ['Graph Traversing', 'Recursion', 'Divide and Conquer'] }] },
+  { type: 'quiz', label: 'Quiz 5 sample solutions', path: '../quiz5_sol.pdf', topics: [{ topic: 'algo', subtopics: ['Graph Traversing', 'Recursion', 'Divide and Conquer'] }] },
+  { type: 'quiz', label: '(Mostly) OOP problem set', path: '../oop_problemset.pdf', topics: [{ topic: 'oop' }] },
+];
+
+function resourceMatchesTopic(resource, topicId, subtopicName) {
+  return resource.topics.some((t) => {
+    if (t.topic !== topicId) return false;
+    if (!subtopicName) return true; // topic-wide lookup: any subtopic tag counts
+    if (!t.subtopics || t.subtopics.length === 0) return true; // topic-wide resource
+    return t.subtopics.includes(subtopicName);
+  });
+}
+
+function resourcesFor(topicId, subtopicName) {
+  return RESOURCES.filter((r) => resourceMatchesTopic(r, topicId, subtopicName));
+}
 
 // ---------- storage ----------
 
@@ -718,6 +913,7 @@ function renderEditor() {
   editorContent.value = note.content || '';
   editorUpdated.textContent = `Updated ${formatDate(note.updatedAt)}`;
   $('#pin-toggle').classList.toggle('active', !!note.pinned);
+  renderRelatedMaterials();
   updatePreview();
 }
 
@@ -726,10 +922,115 @@ function updatePreview() {
   editorPreview.innerHTML = renderMarkdown(editorContent.value || '*Nothing here yet.*');
 }
 
+function renderRelatedMaterials() {
+  const container = $('#related-materials');
+  const resources = resourcesFor(editorTopic.value, editorSubtopic.value);
+  if (resources.length === 0) {
+    container.innerHTML = '<div class="related-empty">No matching lecture or quiz material found for this topic yet.</div>';
+    return;
+  }
+  container.innerHTML =
+    '<div class="related-label">Related course materials</div><ul class="related-list">' +
+    resources
+      .map(
+        (r) =>
+          `<li><span>${r.type === 'lecture' ? '🎓' : '📝'}</span><a href="${r.path}" target="_blank" rel="noopener">${escapeHtml(r.label)}</a></li>`
+      )
+      .join('') +
+    '</ul>';
+}
+
 function refreshAll() {
   renderTopics();
   renderNoteList();
   renderEditor();
+}
+
+// ---------- topic coverage view ----------
+
+let viewMode = 'notes';
+
+function coverageRows() {
+  const rows = [];
+  for (const t of TOPICS) {
+    if (t.id === 'other') continue;
+    rows.push({ kind: 'topic', topicId: t.id, label: t.name });
+    if (t.subtopics.length === 0) {
+      rows.push({ kind: 'sub', topicId: t.id, subtopic: null, label: t.name, isOnlyRow: true });
+    } else {
+      rows.push({ kind: 'sub', topicId: t.id, subtopic: null, label: '(general)' });
+      for (const s of t.subtopics) {
+        rows.push({ kind: 'sub', topicId: t.id, subtopic: s, label: s });
+      }
+    }
+  }
+  return rows;
+}
+
+function renderLinkList(resources) {
+  if (resources.length === 0) return '<span class="none">—</span>';
+  return (
+    '<div class="coverage-links">' +
+    resources
+      .map((r) => `<a href="${r.path}" target="_blank" rel="noopener" title="${escapeHtml(r.label)}">${r.type === 'lecture' ? '🎓' : '📝'} ${escapeHtml(r.label.split(':')[0].split('(')[0].trim())}</a>`)
+      .join('') +
+    '</div>'
+  );
+}
+
+function renderCoverage() {
+  const wrap = $('#coverage-table-wrap');
+  const rows = coverageRows()
+    .map((row) => {
+      if (row.kind === 'topic') {
+        return `<tr class="coverage-row topic-row"><td colspan="4">${escapeHtml(row.label)}</td></tr>`;
+      }
+      const noteCount = notes.filter(
+        (n) => n.topic === row.topicId && (row.isOnlyRow || (row.subtopic === null ? !n.subtopic : n.subtopic === row.subtopic))
+      ).length;
+      const lectures = resourcesFor(row.topicId, row.subtopic).filter((r) => r.type === 'lecture');
+      const quizzes = resourcesFor(row.topicId, row.subtopic).filter((r) => r.type === 'quiz');
+      let statusClass = 'gap';
+      let statusLabel = 'No material yet';
+      if (noteCount > 0) {
+        statusClass = 'has-notes';
+        statusLabel = `${noteCount} note${noteCount === 1 ? '' : 's'}`;
+      } else if (lectures.length > 0 || quizzes.length > 0) {
+        statusClass = 'has-materials';
+        statusLabel = 'No notes yet';
+      }
+      return `<tr class="coverage-row sub-row" data-topic="${row.topicId}" data-subtopic="${row.subtopic ? escapeHtml(row.subtopic) : ''}">
+        <td>${escapeHtml(row.label)}</td>
+        <td><span class="coverage-status ${statusClass}">${statusLabel}</span></td>
+        <td>${renderLinkList(lectures)}</td>
+        <td>${renderLinkList(quizzes)}</td>
+      </tr>`;
+    })
+    .join('');
+
+  wrap.innerHTML = `<table class="coverage-table">
+    <thead><tr><th>Topic</th><th>Notes</th><th>Lecture materials</th><th>Quiz materials</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+
+  wrap.querySelectorAll('.sub-row').forEach((tr) => {
+    tr.addEventListener('click', (e) => {
+      if (e.target.closest('a')) return; // let resource links behave normally
+      activeTopicFilter = tr.dataset.topic;
+      searchQuery = tr.dataset.subtopic || '';
+      searchInput.value = searchQuery;
+      setViewMode('notes');
+      refreshAll();
+    });
+  });
+}
+
+function setViewMode(mode) {
+  viewMode = mode;
+  $('#notes-view').style.display = mode === 'notes' ? 'contents' : 'none';
+  $('#coverage-view').classList.toggle('hidden', mode !== 'coverage');
+  $('#coverage-toggle').classList.toggle('active', mode === 'coverage');
+  if (mode === 'coverage') renderCoverage();
 }
 
 // ---------- actions ----------
@@ -843,12 +1144,19 @@ $('#pin-toggle').addEventListener('click', () => {
 
 editorTopic.addEventListener('change', () => {
   populateSubtopicSelect(editorTopic.value, '');
+  renderRelatedMaterials();
   saveActiveNoteFromForm();
 });
+
+editorSubtopic.addEventListener('change', renderRelatedMaterials);
 
 [editorTitle, editorSubtopic, editorTags].forEach((el) =>
   el.addEventListener('change', saveActiveNoteFromForm)
 );
+
+$('#coverage-toggle').addEventListener('click', () => {
+  setViewMode(viewMode === 'coverage' ? 'notes' : 'coverage');
+});
 
 let saveTimer = null;
 editorContent.addEventListener('input', () => {

@@ -22,6 +22,19 @@ Open [`index.html`](index.html) directly in a browser (double-click it, or
   `Cmd/Ctrl+S`.
 - **Export / Import JSON** — back up your notes to a file, or move them
   between browsers/computers.
+- **Related course materials** — while editing a note, the panel below the
+  topic/subtopic pickers links to the lecture slides and quiz problem
+  sets/solutions in this repo that match the selected topic.
+- **Topic Coverage** (button, top right) — a table of every syllabus topic
+  and subtopic showing how many notes you have, and which lecture/quiz
+  materials exist for it. Click a row to jump back to notes filtered to that
+  subtopic. This is the fastest way to see what you haven't reviewed yet.
+
+Note: the course-material links (both in the editor and the coverage view)
+are relative paths like `../lectures/...`, so they only resolve while
+`index.html` stays in place inside the cloned repo (`notes-organizer/`). If
+you move or download just this file elsewhere, note-taking still works fully
+offline — only those particular links will 404.
 
 ## Topic taxonomy
 
@@ -40,6 +53,19 @@ The topic list mirrors the Fall 2026 CMPT 225 course outline:
 
 Edit the `TOPICS` array in the `<script>` block of [`index.html`](index.html)
 if the course outline changes or you want to add finer-grained subtopics.
+
+## Lecture/quiz mapping
+
+The `RESOURCES` array (also in the `<script>` block) maps each topic/subtopic
+to the matching lecture folder and quiz problem set/solutions in this repo.
+It was built from the actual lecture slide titles (not folder names) and each
+quiz's stated textbook chapters, cross-referenced against the textbook's
+table of contents — not guessed. It currently reflects the Summer 2026
+offering's lecture order, since that's what's in this repo; a couple of
+syllabus topics (Sets, Searching, Disk-Bound Data) have no matching lecture
+yet, which the coverage view correctly shows as gaps. When Fall 2026 lecture
+materials land in this repo, update the `path`/`label` values in `RESOURCES`
+to match.
 
 ## Data
 

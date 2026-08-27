@@ -1,14 +1,16 @@
 # CMPT 225 Notes Organizer (Fall 2026)
 
 A small, self-contained, offline notes app for organizing CMPT 225 study notes by
-topic. No build step, no server, no external dependencies — everything runs
-directly in the browser and notes are saved to that browser's `localStorage`
-(nothing is uploaded anywhere).
+topic. It's a single HTML file — no build step, no server, no external
+dependencies, no other files to keep alongside it — and notes are saved to
+that browser's `localStorage` (nothing is uploaded anywhere).
 
 ## Using it
 
 Open [`index.html`](index.html) directly in a browser (double-click it, or
-`open index.html` / `xdg-open index.html`). That's it.
+`open index.html` / `xdg-open index.html`). That's it. Because everything
+(CSS and JS) is inlined into the one file, you can copy or download just
+`index.html` on its own and it'll still work — no missing-stylesheet issues.
 
 - **Topics** (left column) — filter notes by the course's topic areas.
 - **Notes list** (middle column) — search, browse, and pick a note to edit.
@@ -36,8 +38,8 @@ The topic list mirrors the Fall 2026 CMPT 225 course outline:
   Notation, Master Theorem
 - **Other** — anything that doesn't fit the above (logistics, quiz prep, etc.)
 
-Edit the `TOPICS` array at the top of [`app.js`](app.js) if the course outline
-changes or you want to add finer-grained subtopics.
+Edit the `TOPICS` array in the `<script>` block of [`index.html`](index.html)
+if the course outline changes or you want to add finer-grained subtopics.
 
 ## Data
 
